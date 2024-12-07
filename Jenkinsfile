@@ -124,7 +124,66 @@ pipeline {
                 }
             }
         }
-        
+        stage('Approval') {
+            steps {
+                script {
+                    // Approval step from admin
+                    def approval = input(
+                        id: 'Approval', 
+                        message: 'Do you want to proceed with building the Docker image?',
+                        parameters: [
+                            [$class: 'BooleanParameterDefinition', name: 'Proceed', defaultValue: true]
+                        ]
+                    )
+                    if (!approval) {
+                        error("Build was not approved by admin.")
+                    }
+                }
+            }
+        }
+        stage('Build & Tag Docker Image') {
+    steps {
+        script {
+            try {
+                // Use the TAG_VERSION parameter directly for tagging
+                def tagVersion = params.TAG_VERSION ?: 'latest'
+                withDockerRegistry(credentialsId: 'dockerhub') {
+                    sh "docker build -t ${params.IMAGE_NAME}:${tagVersion} ."
+                }
+            } catch (Exception e) {
+                error("Docker Build failed: ${e.message}")
+            }
+        }
+    }
+}
+        stage('TRIVY') {
+            steps {
+                script {
+                    try {
+                        def tagVersion = params.TAG_VERSION ?: 'latest'
+                        sh "trivy image --format table --timeout 15m -o trivy-image-report.html ${params.IMAGE_NAME}:${tagVersion}"
+                        echo "Trivy report path: ${env.WORKSPACE}/trivy-image-report.html"
+                        archiveArtifacts artifacts: 'trivy-image-report.html'
+                    } catch (Exception e) {
+                        error("TRIVY failed: ${e.message}")
+                    }
+                }
+            }
+        }
+        stage('Push Docker Image') {
+            steps {
+                script {
+                    try {
+                        def tagVersion = params.TAG_VERSION ?: 'latest'
+                        withDockerRegistry(credentialsId: 'dockerhub') {
+                            sh "docker push ${params.IMAGE_NAME}:${tagVersion}"
+                        }
+                    } catch (Exception e) {
+                        error("Docker Push failed: ${e.message}")
+                    }
+                }
+            }
+        }
         stage('Post Clean') {
             steps {
                 script {
