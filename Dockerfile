@@ -11,8 +11,8 @@ ADD target/addressbook.war /usr/local/tomcat/webapps/
 EXPOSE 8080
 
 # Set the environment variables
-ENV JAVA_OPTS=-Xms512m -Xmx1024m
-ENV CATALINA_OPTS=-Djava.net.preferIPv4Stack=true
+ENV JAVA_OPTS="-Xms512m -Xmx1024m"
+ENV CATALINA_OPTS="-Djava.net.preferIPv4Stack=true"
 
 # Set the default command to run when the container starts
 CMD ["catalina.sh", "run"]
