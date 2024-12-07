@@ -184,7 +184,6 @@ pipeline {
                 }
             }
         }
-        
         stage('Post Clean') {
             steps {
                 script {
