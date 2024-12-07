@@ -161,40 +161,5 @@ pipeline {
             }
         }
     }
-    post {
-    success {
-        emailext(
-            subject: "Build Successful: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
-            body: """
-                The build was successful!
-                
-                Check the details at: ${env.BUILD_URL}
-                
-                Best regards,
-                Jenkins
-            """,
-            to: 'rajendra.daggubati1997@gmail.com, rajendra.daggubati@gmail.com',
-            recipientProviders: [[$class: 'CulpritsRecipientProvider'], [$class: 'RequesterRecipientProvider']]
-        )
-    }
-    failure {
-        emailext(
-            subject: "Build Failed: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
-            body: """
-                The build has failed.
-                
-                Check the details at: ${env.BUILD_URL}
-                
-                Here are the logs:
-                ${currentBuild.rawBuild.getLog(100).join('\n')}
-                
-                Best regards,
-                Jenkins
-            """,
-            to: 'rajendra.daggubati1997@gmail.com, rajendra.daggubati@gmail.com',
-            recipientProviders: [[$class: 'CulpritsRecipientProvider'], [$class: 'RequesterRecipientProvider']]
-        )
-    }
-}
 }
 
