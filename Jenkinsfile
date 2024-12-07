@@ -204,5 +204,48 @@ pipeline {
             }
         }
     }
+
+post {
+    /**  
+    always {
+            echo "Build ${env.JOB_NAME}"
+            //build junit files
+            junit 'dirname/tests/*.xml'
+            //build artifacts
+            archiveArtifacts artifacts: 'dirname/tests/artifacts/*', fingerprint: true
+    } */
+    success {
+            emailext(
+                subject: "${env.JOB_NAME} [${env.BUILD_NUMBER}] Success!",
+                body: """'${env.JOB_NAME} [${env.BUILD_NUMBER}]' Success!":</p>
+                    <p>Check console output at <a href='${env.BUILD_URL}'>${env.JOB_NAME} [${env.BUILD_NUMBER}]/a></p>""",
+                to: "rajendra.daggubati@gmail.com"
+            )
+    }
+    
+    failure {
+        emailext(
+                subject: "Deployment Failed! - ${env.JOB_NAME} [${env.BUILD_NUMBER}]",
+                body: """FAILURE!: '${env.JOB_NAME} [${env.BUILD_NUMBER}]'
+                    Check console output at <a href='${env.BUILD_URL}'>${env.JOB_NAME} [${env.BUILD_NUMBER}]/a>""",
+                to: "rajendra.daggubati@gmail.com"
+        )
+
+    }
+    
+    unstable {
+        
+        emailext(
+                subject: "Deployment Aborted! - ${env.JOB_NAME} [${env.BUILD_NUMBER}]",
+                body: """Aborted!: '${env.JOB_NAME} [${env.BUILD_NUMBER}]'
+                    Check console output at <a href='${env.BUILD_URL}'>${env.JOB_NAME} [${env.BUILD_NUMBER}]/a>""",
+                to: "rajendra.daggubati@gmail.com"
+        )
+
+    }
+    
+    
+  }
+
 }
 
