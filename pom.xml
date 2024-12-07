@@ -329,6 +329,56 @@
                                         <ignoreIdentifiers>true</ignoreIdentifiers>
                                     </configuration>
                                 </plugin>
+                                <plugin>
+                                    <groupId>org.codehaus.mojo</groupId>
+                                    <artifactId>cobertura-maven-plugin</artifactId>
+                                    <version>2.7</version>
+                                    <configuration>
+                                        <effort>Max</effort>
+                                        <xmlOutput>true</xmlOutput>
+                                    </configuration>
+                                </plugin>
+                                <plugin>
+                                    <artifactId>maven-javadoc-plugin</artifactId>
+                                    <version>2.9.1</version>
+                                    <configuration>
+                                        <source>1.8</source>
+                                        <doclet>
+                                            gr.spinellis.umlgraph.doclet.UmlGraphDoc
+                                        </doclet>
+                                        <docletArtifact>
+                                            <groupId>gr.spinellis</groupId>
+                                            <artifactId>UmlGraph</artifactId>
+                                            <version>4.6</version>
+                                        </docletArtifact>
+                                        <additionalparam>
+                                            -inferrel -inferdep -hide java.* -collpackages
+                                            java.util.* -attributes -operations
+                                            -enumerations -enumconstants
+                                        </additionalparam>
+                                    </configuration>
+                                </plugin>
+                                <plugin>
+                                    <groupId>org.apache.maven.plugins</groupId>
+                                    <artifactId>maven-jxr-plugin</artifactId>
+                                    <version>2.4</version>
+                                </plugin>
+                            </reportPlugins>
+                        </configuration>
+                        <dependencies>
+                            <dependency>
+                                <groupId>com.edurekademo.tutorial</groupId>
+                                <artifactId>addressbook</artifactId>
+                                <version>${project.version}</version>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>maven2</id>
+            <build>
                 <plugins>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
@@ -375,8 +425,6 @@
                                 <format>html</format>
                                 <format>xml</format>
                             </formats>
-                            <effort>Max</effort>
-                            <xmlOutput>true</xmlOutput>
                         </configuration>
                     </plugin>
                     <plugin>
@@ -390,8 +438,10 @@
                             <rulesets>
                                 <ruleset>/pmd-rules.xml</ruleset>
                             </rulesets>
+                            <!-- CPD options -->
                             <minimumTokens>20</minimumTokens>
                             <ignoreIdentifiers>true</ignoreIdentifiers>
+
                         </configuration>
                     </plugin>
                     <plugin>
@@ -440,9 +490,5 @@
             </reporting>
         </profile>
     </profiles>
+
 </project>
-                                
-                                    
-                            
-           
-                            
