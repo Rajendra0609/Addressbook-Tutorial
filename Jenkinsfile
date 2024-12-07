@@ -184,7 +184,6 @@ pipeline {
                 }
             }
         }
-        
         stage('Post Clean') {
             steps {
                 script {
@@ -205,6 +204,7 @@ pipeline {
             }
         }
     }
+
 post {
     /**  
     always {
@@ -246,5 +246,6 @@ post {
     
     
   }
+
 }
 
