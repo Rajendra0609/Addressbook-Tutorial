@@ -56,16 +56,27 @@ pipeline {
             }			
         }
         stage('codecoverage') {
-            steps {
-                echo 'codecoverage..'
-                sh 'mvn cobertura:cobertura -Dcobertura.report.format=xml'
-            }
-            post {
-                success {
-                    cobertura autoUpdateHealth: false, autoUpdateStability: false, coberturaReportFile: 'target/site/cobertura/coverage.xml', conditionalCoverageTargets: '70, 0, 0', failUnhealthy: false, failUnstable: false, lineCoverageTargets: '80, 0, 0', maxNumberOfBuilds: 0, methodCoverageTargets: '80, 0, 0', onlyStable: false, sourceEncoding: 'ASCII', zoomCoverageChart: false                  
-                }
-            }		
+    steps {
+        echo 'Running code coverage...'
+        sh 'mvn verify -Dcobertura.report.format=xml'
+    }
+    post {
+        success {
+            cobertura autoUpdateHealth: false, 
+                      autoUpdateStability: false, 
+                      coberturaReportFile: 'target/site/cobertura/coverage.xml', 
+                      conditionalCoverageTargets: '70, 0, 0', 
+                      failUnhealthy: false, 
+                      failUnstable: false, 
+                      lineCoverageTargets: '80, 0, 0', 
+                      maxNumberOfBuilds: 0, 
+                      methodCoverageTargets: '80, 0, 0', 
+                      onlyStable: false, 
+                      sourceEncoding: 'ASCII', 
+                      zoomCoverageChart: false                 
         }
+    }
+}
         stage('Validate') {
             steps {
                 script {
