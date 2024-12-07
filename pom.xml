@@ -331,8 +331,8 @@
                                 </plugin>
                                 <plugin>
                                     <groupId>org.codehaus.mojo</groupId>
-                                    <artifactId>findbugs-maven-plugin</artifactId>
-                                    <version>2.4.0</version>
+                                    <artifactId>cobertura-maven-plugin</artifactId>
+                                    <version>2.7</version>
                                     <configuration>
                                         <effort>Max</effort>
                                         <xmlOutput>true</xmlOutput>
