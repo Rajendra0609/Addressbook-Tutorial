@@ -162,7 +162,7 @@ pipeline {
                 Best regards,
                 Jenkins
             """,
-            to: 'rajendra.daggubati1997@gmail.com, rajendra.daggubati@gmail.com', // Specify email addresses here
+            to: 'rajendra.daggubati1997@gmail.com, rajendra.daggubati@gmail.com',
             recipientProviders: [[$class: 'CulpritsRecipientProvider'], [$class: 'RequesterRecipientProvider']]
         )
     }
@@ -180,7 +180,7 @@ pipeline {
                 Best regards,
                 Jenkins
             """,
-            to: 'rajendra.daggubati1997@gmail.com, rajendra.daggubati@gmail.com', // Specify email addresses here
+            to: 'rajendra.daggubati1997@gmail.com, rajendra.daggubati@gmail.com',
             recipientProviders: [[$class: 'CulpritsRecipientProvider'], [$class: 'RequesterRecipientProvider']]
         )
     }
