@@ -66,5 +66,71 @@ To use the built in server adapters of Eclipse, instead of doing "Run As -> Mave
 - Run As -> Run on Server
 - Select the server you want to run on, e.g. Apache Tomcat 8 and click ok
 - *Do not use the suggested J2EE Preview server* as it is outdated, deprecated and does not support Servlet 3, which is required for this application
+Steps to Run Your Configuration in Minikube:
+Start Minikube: Ensure that Minikube is running. You can start it with the following command:
+
+bash
+
+Verify
+
+Open In Editor
+Edit
+Copy code
+minikube start
+Apply Your YAML Configuration: Save your deployment and service configuration in a file, for example, my-app.yaml. Then, apply it using:
+
+bash
+
+Verify
+
+Open In Editor
+Edit
+Copy code
+kubectl apply -f my-app.yaml
+Check the Status: After applying the configuration, check the status of your deployment and service:
+
+bash
+
+Verify
+
+Open In Editor
+Edit
+Copy code
+kubectl get deployments
+kubectl get services
+Access Your Application: If your service type is LoadBalancer, you can access it using:
+
+bash
+
+Verify
+
+Open In Editor
+Edit
+Copy code
+minikube service my-app-service --url
+This command will provide you with a URL to access your application.
+
+Monitor Logs: To see the logs of your application, you can use:
+
+bash
+
+Verify
+
+Open In Editor
+Edit
+Copy code
+kubectl logs -l app=my-app
+Additional Notes:
+Ensure that you have sufficient resources allocated to Minikube (CPU, memory) to run your application smoothly.
+If you encounter any issues, you can check the Minikube logs for troubleshooting:
+bash
+
+Verify
+
+Open In Editor
+Edit
+Copy code
+minikube logs
+By following these steps, you should be able to successfully run your application in Minikube.
 
 **** End of documentation
