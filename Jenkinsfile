@@ -84,16 +84,19 @@ pipeline {
                 }
             }
         }
-        
         stage('Package') {
-            steps {
-                script {
-                    sh 'mvn package'
-                }
-                // Stash the WAR files to the master
-                stash includes: '**/*.war', name: 'warFiles'
-            }
+    steps {
+        script {
+            // Run the Maven package command
+            sh 'mvn package'
         }
+        // Archive the WAR files
+        archiveArtifacts(
+            artifacts: '**/*.war',
+            allowEmptyArchive: true
+        )
+    }
+}
         
         stage('Lynis Security Scan') {
             steps {
@@ -144,8 +147,6 @@ pipeline {
         }
         
         stage('Build & Tag Docker Image') {
-            // Run this stage on the master node
-            node('master') {
                 steps {
                     script {
                         try {
@@ -159,7 +160,6 @@ pipeline {
                         }
                     }
                 }
-            }
         }
         
         stage('TRIVY') {
@@ -191,6 +191,19 @@ pipeline {
                 }
             }
         }
+        stage('DeployToProduction') {
+    steps {
+        script {
+            // Run this stage on the master node
+            node('master') {
+                sh "kubectl apply 
+                    
+                   
+                )
+            }
+        }
+    }
+}
         
         stage('Post Clean') {
             steps {
