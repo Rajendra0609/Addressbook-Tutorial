@@ -56,11 +56,11 @@ pipeline {
             }			
         }
         stage('codecoverage') {
-    steps {
-        echo 'Running code coverage...'
-        sh 'mvn verify -Dcobertura.report.format=xml'
-    }
-}
+            steps {
+                echo 'Running code coverage...'
+                sh 'mvn verify -Dcobertura.report.format=xml'
+            }
+        }
         stage('Validate') {
             steps {
                 script {
@@ -124,6 +124,7 @@ pipeline {
                 }
             }
         }
+        
         stage('Approval') {
             steps {
                 script {
@@ -141,21 +142,26 @@ pipeline {
                 }
             }
         }
+        
         stage('Build & Tag Docker Image') {
-    steps {
-        script {
-            try {
-                // Use the TAG_VERSION parameter directly for tagging
-                def tagVersion = params.TAG_VERSION ?: 'latest'
-                withDockerRegistry(credentialsId: 'dockerhub') {
-                    sh "docker build -t ${params.IMAGE_NAME}:${tagVersion} ."
+            // Run this stage on the master node
+            node('master') {
+                steps {
+                    script {
+                        try {
+                            // Use the TAG_VERSION parameter directly for tagging
+                            def tagVersion = params.TAG_VERSION ?: 'latest'
+                            withDockerRegistry(credentialsId: 'dockerhub') {
+                                sh "docker build -t ${params.IMAGE_NAME}:${tag Version} ."
+                            }
+                        } catch (Exception e) {
+                            error("Docker Build failed: ${e.message}")
+                        }
+                    }
                 }
-            } catch (Exception e) {
-                error("Docker Build failed: ${e.message}")
             }
         }
-    }
-}
+        
         stage('TRIVY') {
             steps {
                 script {
@@ -170,6 +176,7 @@ pipeline {
                 }
             }
         }
+        
         stage('Push Docker Image') {
             steps {
                 script {
@@ -205,46 +212,32 @@ pipeline {
             }
         }
     }
-post {
-    /**  
-    always {
-            echo "Build ${env.JOB_NAME}"
-            //build junit files
-            junit 'dirname/tests/*.xml'
-            //build artifacts
-            archiveArtifacts artifacts: 'dirname/tests/artifacts/*', fingerprint: true
-    } */
-    success {
+    post {
+        success {
             emailext(
                 subject: "${env.JOB_NAME} [${env.BUILD_NUMBER}] Success!",
                 body: """'${env.JOB_NAME} [${env.BUILD_NUMBER}]' Success!":</p>
                     <p>Check console output at <a href='${env.BUILD_URL}'>${env.JOB_NAME} [${env.BUILD_NUMBER}]/a></p>""",
                 to: "rajendra.daggubati@gmail.com"
             )
-    }
-    
-    failure {
-        emailext(
+        }
+        
+        failure {
+            emailext(
                 subject: "Deployment Failed! - ${env.JOB_NAME} [${env.BUILD_NUMBER}]",
                 body: """FAILURE!: '${env.JOB_NAME} [${env.BUILD_NUMBER}]'
                     Check console output at <a href='${env.BUILD_URL}'>${env.JOB_NAME} [${env.BUILD_NUMBER}]/a>""",
                 to: "rajendra.daggubati@gmail.com"
-        )
-
-    }
-    
-    unstable {
+            )
+        }
         
-        emailext(
+        unstable {
+            emailext(
                 subject: "Deployment Aborted! - ${env.JOB_NAME} [${env.BUILD_NUMBER}]",
                 body: """Aborted!: '${env.JOB_NAME} [${env.BUILD_NUMBER}]'
                     Check console output at <a href='${env.BUILD_URL}'>${env.JOB_NAME} [${env.BUILD_NUMBER}]/a>""",
                 to: "rajendra.daggubati@gmail.com"
-        )
-
+            )
+        }
     }
-    
-    
-  }
 }
-
